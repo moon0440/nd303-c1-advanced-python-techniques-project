@@ -68,10 +68,11 @@ class NearEarthObject:
 
     def __str__(self):
         """Return `str(self)`."""
-        # TODO: Use this object's attributes to return a human-readable string representation.
+        # TODO_DONE: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A NearEarthObject ..."
+        return f"NEO {self.fullname} has a diameter of {self.diameter:.3f} km " \
+               f"and {['is not', 'is'][int(self.hazardous)]} potentially hazardous."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
@@ -94,21 +95,22 @@ class CloseApproach:
     """
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, **info):
+    def __init__(self, _designation: str = '', time: str = None, distance: float = 0.0, velocity: float = 0.0):
         """Create a new `CloseApproach`.
 
-        :param info: A dictionary of excess keyword arguments supplied to the constructor.
+        :param datetime time: The date and time, in UTC, at which the NEO passes closest to Earth.
+        :param float distance: The nominal approach distance, in astronomical units, of the NEO to Earth at the closest point.
+        :param float velocity: The velocity, in kilometers per second, of the NEO relative to Earth at the closest point.
+        :param NearEarthObject neo: The NearEarthObject that is making a close approach to Earth.
         """
-        # TODO: Assign information from the arguments passed to the constructor
-        # assignees: moon0440
-        # milestone: 1
+        # TODO_DONE: Assign information from the arguments passed to the constructor
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self._designation = ''
-        self.time = None  # TODO_IGNORE:: Use the cd_to_datetime function for this attribute.
-        self.distance = 0.0
-        self.velocity = 0.0
+        self._designation = _designation
+        self.time = cd_to_datetime(time)  # TODO_IGNORE: Use the cd_to_datetime function for this attribute.
+        self.distance = distance
+        self.velocity = velocity
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = None
