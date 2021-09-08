@@ -20,6 +20,8 @@ You'll edit this file in Task 1.
 from helpers import cd_to_datetime, datetime_to_str
 
 
+
+
 class NearEarthObject:
     """A near-Earth object (NEO).
 
@@ -157,37 +159,3 @@ class CloseApproach:
         #  https://www.python.org/dev/peps/pep-0498/#s-r-and-a-are-redundant
         return (f"CloseApproach(time={repr(self.time_str)}, distance={self.distance:.2f}, "
                 f"velocity={self.velocity:.2f}, neo={repr(self.neo)})")
-
-neo = NearEarthObject(
-    designation='2020 FK',
-    name='One REALLY BIG fake asteroid',
-    diameter=12.345,
-    hazardous=True
-)  # Use any sample data here.
-print(neo.designation)
-# 2020 FK
-print(neo.name)
-# One REALLY BIG fake asteroid
-print(neo.diameter)
-# 12.345
-print(neo.hazardous)
-# True
-print(neo)
-# NEO 2020 FK (One REALLY BIG fake asteroid) has a diameter of 12.345 km and is potentially hazardous.
-
-ca = CloseApproach(
-    time='2020-Jan-01 12:30',
-    distance=0.25,
-    velocity=56.78,
-
-)  # Use any sample data here.
-print(type(ca.time))
-# datetime.datetime
-print(ca.time_str)
-# 2020-01-01 12:30
-print(ca.distance)
-# 0.25
-print(ca.velocity)
-# 56.78
-print(ca)
-# On 2020-01-01 12:30, '2020 FK (One REALLY BIG fake asteroid)' approaches Earth at a distance of 0.25 au and a velocity of 56.78 km/s.
