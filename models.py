@@ -128,7 +128,7 @@ class CloseApproach:
         formatted string that can be used in human-readable representations and
         in serialization to CSV and JSON files.
         """
-        # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
+        # TODO_DONE: Use this object's `.time` attribute and the `datetime_to_str` function to
         # build a formatted representation of the approach time.
         return datetime_to_str(self.time)
 
