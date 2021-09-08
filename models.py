@@ -76,8 +76,8 @@ class NearEarthObject:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return (f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, "
-                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})")
+        return (f"NearEarthObject(designation={repr(self.designation)}, name={repr(self.name)}, "
+                f"diameter={self.diameter:.3f}, hazardous={repr(self.hazardous)})")
 
 
 class CloseApproach:
@@ -108,7 +108,7 @@ class CloseApproach:
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
         self._designation = _designation
-        self.time = cd_to_datetime(time)  # TODO_IGNORE: Use the cd_to_datetime function for this attribute.
+        self.time = cd_to_datetime(time)  # TODO_DONE: Use the cd_to_datetime function for this attribute.
         self.distance = distance
         self.velocity = velocity
 
@@ -130,12 +130,19 @@ class CloseApproach:
         """
         # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
         # build a formatted representation of the approach time.
+        return datetime_to_str(self.time)
+
+    @property
+    def fullname(self):
+        """Return a representation of the full name of this CloseApproach."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        #   Enable below once self.neo has been implemented
+        # return f'{self.designation} ({self.name})' if self.name else f'{self.designation}'
+        return f'{self._designation}'
 
     def __str__(self):
         """Return `str(self)`."""
-        # TODO: Use this object's attributes to return a human-readable string representation.
+        # TODO_DONE: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         return f"At {datetime_to_str(self.time)}, {repr(self._designation)} approaches Earth at a " \
@@ -146,7 +153,41 @@ class CloseApproach:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        # TODO: Extra - Replace !r with repr(x)
+        # TODO_DONE: Extra - Replace !r with repr(x)
         #  https://www.python.org/dev/peps/pep-0498/#s-r-and-a-are-redundant
-        return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
-                f"velocity={self.velocity:.2f}, neo={self.neo!r})")
+        return (f"CloseApproach(time={repr(self.time_str)}, distance={self.distance:.2f}, "
+                f"velocity={self.velocity:.2f}, neo={repr(self.neo)})")
+
+neo = NearEarthObject(
+    designation='2020 FK',
+    name='One REALLY BIG fake asteroid',
+    diameter=12.345,
+    hazardous=True
+)  # Use any sample data here.
+print(neo.designation)
+# 2020 FK
+print(neo.name)
+# One REALLY BIG fake asteroid
+print(neo.diameter)
+# 12.345
+print(neo.hazardous)
+# True
+print(neo)
+# NEO 2020 FK (One REALLY BIG fake asteroid) has a diameter of 12.345 km and is potentially hazardous.
+
+ca = CloseApproach(
+    time='2020-Jan-01 12:30',
+    distance=0.25,
+    velocity=56.78,
+
+)  # Use any sample data here.
+print(type(ca.time))
+# datetime.datetime
+print(ca.time_str)
+# 2020-01-01 12:30
+print(ca.distance)
+# 0.25
+print(ca.velocity)
+# 56.78
+print(ca)
+# On 2020-01-01 12:30, '2020 FK (One REALLY BIG fake asteroid)' approaches Earth at a distance of 0.25 au and a velocity of 56.78 km/s.
