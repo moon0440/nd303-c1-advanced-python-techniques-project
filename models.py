@@ -138,9 +138,15 @@ class CloseApproach:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A CloseApproach ..."
+        return f"At {datetime_to_str(self.time)}, {repr(self._designation)} approaches Earth at a " \
+               f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
+        # TODO: extra - use the following after self.neo is a actual neo object
+        # return f"At {self.time}, {repr(self.neo.fullname)} approaches Earth at a " \
+        #        f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
+        # TODO: Extra - Replace !r with repr(x)
+        #  https://www.python.org/dev/peps/pep-0498/#s-r-and-a-are-redundant
         return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
                 f"velocity={self.velocity:.2f}, neo={self.neo!r})")
