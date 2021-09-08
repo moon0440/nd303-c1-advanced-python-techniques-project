@@ -17,6 +17,7 @@ quirks of the data set, such as missing names and unknown diameters.
 
 You'll edit this file in Task 1.
 """
+import datetime
 from math import isnan
 from helpers import cd_to_datetime, datetime_to_str
 from enum import Enum
@@ -42,14 +43,14 @@ class NearEarthObject:
 
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation: str, name: str = '', hazardous: str = '', diameter: str = '',
+    def __init__(self, designation: str, name: str = '', hazardous: bool = False, diameter: float = float('nan'),
                  approaches: list = []):
         """Create a new `NearEarthObject`.
 
         :param string designation: The primary designation for this NearEarthObject.
         :param string name: The IAU name for this NearEarthObject. Not all NearEarthObject in dataset have a name
-        :param string diameter: The diameter, in kilometers, of this NearEarthObject.
-        :param string hazardous: Whether or not this NearEarthObject is potentially hazardous.
+        :param float diameter: The diameter, in kilometers, of this NearEarthObject.
+        :param bool hazardous: Whether or not this NearEarthObject is potentially hazardous.
         :param list approaches: A collection of this NearEarthObjects close approaches to Earth.
         """
         # TODO_DONE: Assign information from the arguments passed to the constructor
@@ -59,8 +60,8 @@ class NearEarthObject:
         # and a missing diameter being represented by `float('nan')`.
         self.designation = designation
         self.name = name if name else None
-        self.diameter = float(diameter) if diameter.replace('.', '').isnumeric() else float('nan')
-        self.hazardous = HAZARDOUS[hazardous].value if hazardous else False
+        self.diameter = diameter
+        self.hazardous = hazardous
 
         # Create an empty initial collection of linked approaches.
         self.approaches = approaches
@@ -108,7 +109,8 @@ class CloseApproach:
 
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, _designation: str = '', time: str = None, distance: float = 0.0, velocity: float = 0.0):
+    def __init__(self, _designation: str = '', time: datetime.datetime = None, distance: float = float('nan'),
+                 velocity: float = float('nan')):
         """Create a new `CloseApproach`.
 
         :param datetime time: The date and time, in UTC, at which the NEO passes closest to Earth.
@@ -121,7 +123,7 @@ class CloseApproach:
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
         self._designation = _designation
-        self.time = cd_to_datetime(time)  # TODO_DONE: Use the cd_to_datetime function for this attribute.
+        self.time = time  # TODO_DONE: Use the cd_to_datetime function for this attribute.
         self.distance = distance
         self.velocity = velocity
 
