@@ -17,9 +17,14 @@ quirks of the data set, such as missing names and unknown diameters.
 
 You'll edit this file in Task 1.
 """
+from math import isnan
 from helpers import cd_to_datetime, datetime_to_str
+from enum import Enum
 
 
+class HAZARDOUS(Enum):
+    Y = True
+    N = False
 
 
 class NearEarthObject:
@@ -34,19 +39,17 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
+
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation: str, name: str = None, hazardous: bool = False, diameter: float = float('nan', ),
+    def __init__(self, designation: str, name: str = '', hazardous: str = '', diameter: str = '',
                  approaches: list = []):
         """Create a new `NearEarthObject`.
 
         :param string designation: The primary designation for this NearEarthObject.
         :param string name: The IAU name for this NearEarthObject. Not all NearEarthObject in dataset have a name
-            (default is None)
-        :param float diameter: The diameter, in kilometers, of this NearEarthObject.
-            (default is float(nan))
-        :param boolean hazardous: Whether or not this NearEarthObject is potentially hazardous.
-            (default is False)
+        :param string diameter: The diameter, in kilometers, of this NearEarthObject.
+        :param string hazardous: Whether or not this NearEarthObject is potentially hazardous.
         :param list approaches: A collection of this NearEarthObjects close approaches to Earth.
         """
         # TODO_DONE: Assign information from the arguments passed to the constructor
@@ -55,9 +58,9 @@ class NearEarthObject:
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
         self.designation = designation
-        self.name = name
-        self.diameter = diameter
-        self.hazardous = hazardous
+        self.name = name if name else None
+        self.diameter = float(diameter) if diameter.replace('.', '').isnumeric() else float('nan')
+        self.hazardous = HAZARDOUS[hazardous].value if hazardous else False
 
         # Create an empty initial collection of linked approaches.
         self.approaches = approaches
@@ -73,8 +76,15 @@ class NearEarthObject:
         # TODO_DONE: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"NEO {self.fullname} has a diameter of {self.diameter:.3f} km " \
-               f"and {['is not', 'is'][int(self.hazardous)]} potentially hazardous."
+
+        """ Orginal suggested output"""
+        # return f"NEO {self.fullname} has a diameter of {self.diameter:.3f} km " \
+        #        f"and {['is not', 'is'][int(self.hazardous)]} potentially hazardous."
+
+        """ Improved handling for case diameter is unknown """
+        diameter_string = "an unknown diameter" if isnan(self.diameter) else f"a diameter of {self.diameter:.3f} km"
+        return f"NEO {self.fullname} has {diameter_string} and " \
+               f"{['is not', 'is'][int(self.hazardous)]} potentially hazardous."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
@@ -95,6 +105,7 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
+
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
     def __init__(self, _designation: str = '', time: str = None, distance: float = 0.0, velocity: float = 0.0):
