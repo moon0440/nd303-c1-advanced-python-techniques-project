@@ -34,23 +34,31 @@ class NearEarthObject:
     """
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, **info):
+    def __init__(self, designation: str, name: str = None, hazardous: bool = False, diameter: float = float('nan', ),
+                 approaches: list = []):
         """Create a new `NearEarthObject`.
 
-        :param info: A dictionary of excess keyword arguments supplied to the constructor.
+        :param string designation: The primary designation for this NearEarthObject.
+        :param string name: The IAU name for this NearEarthObject. Not all NearEarthObject in dataset have a name
+            (default is None)
+        :param float diameter: The diameter, in kilometers, of this NearEarthObject.
+            (default is float(nan))
+        :param boolean hazardous: Whether or not this NearEarthObject is potentially hazardous.
+            (default is False)
+        :param list approaches: A collection of this NearEarthObjects close approaches to Earth.
         """
-        # TODO: Assign information from the arguments passed to the constructor
+        # TODO_DONE: Assign information from the arguments passed to the constructor
         # onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
-        self.designation = ''
-        self.name = None
-        self.diameter = float('nan')
-        self.hazardous = False
+        self.designation = designation
+        self.name = name
+        self.diameter = diameter
+        self.hazardous = hazardous
 
         # Create an empty initial collection of linked approaches.
-        self.approaches = []
+        self.approaches = approaches
 
     @property
     def fullname(self):
