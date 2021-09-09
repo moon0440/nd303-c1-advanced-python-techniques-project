@@ -19,6 +19,8 @@ You'll edit this file in Task 1.
 """
 import datetime
 from math import isnan
+from operator import attrgetter
+
 from helpers import cd_to_datetime, datetime_to_str
 from enum import Enum
 
@@ -69,6 +71,16 @@ class NearEarthObject:
         """Return a representation of the full name of this NEO."""
         # TODO_DONE: Use self.designation and self.name to build a fullname for this object.
         return f'{self.designation} ({self.name})' if self.name else f'{self.designation}'
+
+    @property
+    def serialize_json(self):
+        # TODO: Document Function
+        key_map = {'designation': 'designation',
+                   'name': 'name',
+                   'diameter_km': 'diameter',
+                   'potentially_hazardous': 'hazardous'
+                   }
+        return {k: attrgetter(v)(self) for k, v in key_map.items()}
 
     def __str__(self):
         """Return `str(self)`."""
@@ -166,6 +178,29 @@ class CloseApproach:
             fullname += f' ({self._neo.name})'
 
         return fullname
+
+    @property
+    def serialize_csv(self):
+        # TODO: Document Function
+        col_map = {'datetime_utc': 'time_str',
+                   'distance_au': 'distance',
+                   'velocity_km_s': 'velocity',
+                   'designation': 'neo.designation',
+                   'name': 'neo.name',
+                   'diameter_km': 'neo.diameter',
+                   'potentially_hazardous': 'neo.hazardous'
+                   }
+        return {k: attrgetter(v)(self) for k, v in col_map.items()}
+
+    @property
+    def serialize_json(self):
+        # TODO: Document Function
+        key_map = {'datetime_utc': 'time_str',
+                   'distance_au': 'distance',
+                   'velocity_km_s': 'velocity',
+                   'neo': 'neo.serialize_json',
+                   }
+        return {k: attrgetter(v)(self) for k, v in key_map.items()}
 
     def __str__(self):
         """Return `str(self)`."""
