@@ -70,13 +70,14 @@ def load_approaches(cad_json_path):
         'dist': {'cls_param': 'distance', 'parser': parse_float},
         'v_rel': {'cls_param': 'velocity', 'parser': parse_float}
     }
+
     with open(cad_json_path, 'r') as f:
         cad_json = json.load(f)
-        for d in cad_json['data']:
-            """ Slow way to do this look for improvements"""
-            cad_data = dict(zip(cad_json['fields'], d))
-            cad_args = {cad_map[k]['cls_param']: cad_map[k]['parser'](v) for k, v in cad_data.items() if
-                        k in cad_map.keys()}
-            cad_collection.append(CloseApproach(**cad_args))
+        
+    for d in cad_json['data']:
+        cad_data = dict(zip(cad_json['fields'], d))
+        cad_args = {cad_map[k]['cls_param']: cad_map[k]['parser'](v) for k, v in cad_data.items() if
+                    k in cad_map.keys()}
+        cad_collection.append(CloseApproach(**cad_args))
 
     return cad_collection

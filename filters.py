@@ -38,6 +38,7 @@ class AttributeFilter:
     Concrete subclasses can override the `get` classmethod to provide custom
     behavior to fetch a desired attribute from the given `CloseApproach`.
     """
+
     def __init__(self, op, value):
         """Construct a new `AttributeFilter` from an binary predicate and a reference value.
 
@@ -106,7 +107,7 @@ def create_filters(date=None, start_date=None, end_date=None,
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    # TD: Decide how you will represent your filters.
+    # TODO: Decide how you will represent your filters.
     return ()
 
 
@@ -119,5 +120,5 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    # TD: Produce at most `n` values from the given iterator.
+    # TODO: Produce at most `n` values from the given iterator.
     return iterator
