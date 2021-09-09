@@ -17,59 +17,81 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
+import datetime
+from itertools import islice
+
+from models import CloseApproach
 
 
 class UnsupportedCriterionError(NotImplementedError):
     """A filter criterion is unsupported."""
 
 
-class AttributeFilter:
-    """A general superclass for filters on comparable attributes.
+# class AttributeFilter:
+#     """A general superclass for filters on comparable attributes.
+#
+#     An `AttributeFilter` represents the search criteria pattern comparing some
+#     attribute of a close approach (or its attached NEO) to a reference value. It
+#     essentially functions as a callable predicate for whether a `CloseApproach`
+#     object satisfies the encoded criterion.
+#
+#     It is constructed with a comparator operator and a reference value, and
+#     calling the filter (with __call__) executes `get(approach) OP value` (in
+#     infix notation).
+#
+#     Concrete subclasses can override the `get` classmethod to provide custom
+#     behavior to fetch a desired attribute from the given `CloseApproach`.
+#     """
+#
+#     def __init__(self, op, value):
+#         """Construct a new `AttributeFilter` from an binary predicate and a reference value.
+#
+#         The reference value will be supplied as the second (right-hand side)
+#         argument to the operator function. For example, an `AttributeFilter`
+#         with `op=operator.le` and `value=10` will, when called on an approach,
+#         evaluate `some_attribute <= 10`.
+#
+#         :param op: A 2-argument predicate comparator (such as `operator.le`).
+#         :param value: The reference value to compare against.
+#         """
+#         self.op = op
+#         self.value = value
+#
+#     def __call__(self, approach):
+#         """Invoke `self(approach)`."""
+#         return self.op(self.get(approach), self.value)
+#
+#     @classmethod
+#     def get(cls, approach):
+#         """Get an attribute of interest from a close approach.
+#
+#         Concrete subclasses must override this method to get an attribute of
+#         interest from the supplied `CloseApproach`.
+#
+#         :param approach: A `CloseApproach` on which to evaluate this filter.
+#         :return: The value of an attribute of interest, comparable to `self.value` via `self.op`.
+#         """
+#         raise UnsupportedCriterionError
+#
+#     def __repr__(self):
+#         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
-    An `AttributeFilter` represents the search criteria pattern comparing some
-    attribute of a close approach (or its attached NEO) to a reference value. It
-    essentially functions as a callable predicate for whether a `CloseApproach`
-    object satisfies the encoded criterion.
 
-    It is constructed with a comparator operator and a reference value, and
-    calling the filter (with __call__) executes `get(approach) OP value` (in
-    infix notation).
-
-    Concrete subclasses can override the `get` classmethod to provide custom
-    behavior to fetch a desired attribute from the given `CloseApproach`.
-    """
-    def __init__(self, op, value):
-        """Construct a new `AttributeFilter` from an binary predicate and a reference value.
-
-        The reference value will be supplied as the second (right-hand side)
-        argument to the operator function. For example, an `AttributeFilter`
-        with `op=operator.le` and `value=10` will, when called on an approach,
-        evaluate `some_attribute <= 10`.
-
-        :param op: A 2-argument predicate comparator (such as `operator.le`).
-        :param value: The reference value to compare against.
-        """
-        self.op = op
-        self.value = value
+class ApproachFilter:
+    # TODO: Class documentation for ApproachFilter
+    def __init__(self, filters: list[tuple]):
+        """ tuple format (input_arg_value, class_attribute_name, operator, valid_type) """
+        self.filters = [f for f in filters if isinstance(f[0], f[3])]
 
     def __call__(self, approach):
-        """Invoke `self(approach)`."""
-        return self.op(self.get(approach), self.value)
+        return all([f[2](self.get(approach, f[1]), f[0]) for f in self.filters])
 
     @classmethod
-    def get(cls, approach):
-        """Get an attribute of interest from a close approach.
-
-        Concrete subclasses must override this method to get an attribute of
-        interest from the supplied `CloseApproach`.
-
-        :param approach: A `CloseApproach` on which to evaluate this filter.
-        :return: The value of an attribute of interest, comparable to `self.value` via `self.op`.
-        """
-        raise UnsupportedCriterionError
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
+    def get(cls, approach: CloseApproach, attr: str):
+        neo_attrs= ['diameter', 'hazardous']
+        approach = approach.neo if attr in neo_attrs else approach
+        attr_value = getattr(approach, attr)
+        return attr_value.date() if attr == 'time' else attr_value
 
 
 def create_filters(date=None, start_date=None, end_date=None,
@@ -106,8 +128,21 @@ def create_filters(date=None, start_date=None, end_date=None,
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    # TD: Decide how you will represent your filters.
-    return ()
+    # TODO_DONE: Decide how you will represent your filters.
+    """ Map of filters -> (input_arg_value, class_attribute_name, operator, valid_type)"""
+    filters = [
+        (date, 'time', operator.eq, datetime.date),
+        (start_date, 'time', operator.ge, datetime.date),
+        (end_date, 'time', operator.le, datetime.date),
+        (distance_min, 'distance', operator.ge, (float, int)),
+        (distance_max, 'distance', operator.le, (float, int)),
+        (velocity_min, 'velocity', operator.ge, (float, int)),
+        (velocity_max, 'velocity', operator.le, (float, int)),
+        (diameter_min, 'diameter', operator.ge, (float, int)),
+        (diameter_max, 'diameter', operator.le, (float, int)),
+        (hazardous, 'hazardous', operator.is_, bool)
+    ]
+    return ApproachFilter(filters)
 
 
 def limit(iterator, n=None):
@@ -119,5 +154,7 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    # TD: Produce at most `n` values from the given iterator.
-    return iterator
+    # TODO_DONE: Produce at most `n` values from the given iterator.
+    n = n if n else None
+    for i in islice(iterator, n):
+        yield i

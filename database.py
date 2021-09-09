@@ -41,11 +41,16 @@ class NEODatabase:
         self._neos = neos
         self._approaches = approaches
 
-        # TODO: What additional auxiliary data structures will be useful?
-        #  milestone: Task 2
+        # TODO_DONE: What additional auxiliary data structures will be useful?
+        #  milestone: 2
+        self.des_neo_map = {n.designation:n for n in neos}
+        self.name_neo_map = {n.name:n for n in neos}
 
-        # TODO: Link together the NEOs and their close approaches.
-        #  milestone: Task 2
+        # TODO_DONE: Link together the NEOs and their close approaches.
+        #  milestone: 2
+        for a in approaches:
+            a.neo = self.des_neo_map[a._designation]
+
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -60,9 +65,9 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        # TODO: Fetch an NEO by its primary designation.
-        #  milestone: Task 2
-        return None
+        # TODO_DONE: Fetch an NEO by its primary designation.
+        #  milestone: 2
+        return self.des_neo_map[designation] if designation in self.des_neo_map else None
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -78,9 +83,9 @@ class NEODatabase:
         :param name: The name, as a string, of the NEO to search for.
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
-        # TODO: Fetch an NEO by its name.
+        # TODO_DONE: Fetch an NEO by its name.
         #  milestone: Task 2
-        return None
+        return self.name_neo_map[name] if name in self.name_neo_map else None
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
@@ -96,7 +101,8 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
+        # TODO_DONE: Generate `CloseApproach` objects that match all of the filters.
         #  milestone: Task 2
         for approach in self._approaches:
-            yield approach
+            if not filters or filters(approach):
+                yield approach
