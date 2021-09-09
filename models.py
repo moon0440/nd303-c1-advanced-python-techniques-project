@@ -173,7 +173,7 @@ class CloseApproach:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         return f"At {datetime_to_str(self.time)}, {repr(self._designation)} approaches Earth at a " \
-               f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
+               f"distance of {self.distance:.2f} au and a velocity of {self.velocity:.2f} km/s."
         # return f"At {self.time}, {repr(self.neo.fullname)} approaches Earth at a " \
         #        f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
 
