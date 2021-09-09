@@ -12,6 +12,7 @@ You'll edit this file in Part 4.
 """
 import csv
 import json
+from operator import attrgetter
 
 
 def write_to_csv(results, filename):
@@ -24,9 +25,22 @@ def write_to_csv(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 'name', 'diameter_km', 'potentially_hazardous')
+    fieldnames = {'datetime_utc': 'time',
+                  'distance_au': 'distance',
+                  'velocity_km_s': 'velocity',
+                  'designation': 'neo.designation',
+                  'name': 'neo.name',
+                  'diameter_km': 'neo.diameter',
+                  'potentially_hazardous': 'neo.hazardous'
+                  }
     # TODO: Write the results to a CSV file, following the specification in the instructions.
     # milestone: 4
+    with open(filename, 'r') as f:
+        csv_writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        csv_writer.writerow(fieldnames.keys())
+        for r in results:
+            csv_writer.writerow([attrgetter(v)(r) for k,v in fieldnames.items()])
+
 
 
 def write_to_json(results, filename):

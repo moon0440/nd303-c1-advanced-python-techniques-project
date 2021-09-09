@@ -88,9 +88,7 @@ class ApproachFilter:
 
     @classmethod
     def get(cls, approach: CloseApproach, attr: str):
-        neo_attrs= ['diameter', 'hazardous']
-        approach = approach.neo if attr in neo_attrs else approach
-        attr_value = getattr(approach, attr)
+        attr_value = operator.attrgetter(attr)(approach)
         return attr_value.date() if attr == 'time' else attr_value
 
 
@@ -138,9 +136,9 @@ def create_filters(date=None, start_date=None, end_date=None,
         (distance_max, 'distance', operator.le, (float, int)),
         (velocity_min, 'velocity', operator.ge, (float, int)),
         (velocity_max, 'velocity', operator.le, (float, int)),
-        (diameter_min, 'diameter', operator.ge, (float, int)),
-        (diameter_max, 'diameter', operator.le, (float, int)),
-        (hazardous, 'hazardous', operator.is_, bool)
+        (diameter_min, 'neo.diameter', operator.ge, (float, int)),
+        (diameter_max, 'neo.diameter', operator.le, (float, int)),
+        (hazardous, 'neo.hazardous', operator.is_, bool)
     ]
     return ApproachFilter(filters)
 
