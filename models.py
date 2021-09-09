@@ -43,15 +43,13 @@ class NearEarthObject:
 
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation: str, name: str = '', hazardous: bool = False, diameter: float = float('nan'),
-                 approaches: list = []):
+    def __init__(self, designation: str, name: str = '', hazardous: bool = False, diameter: float = float('nan')):
         """Create a new `NearEarthObject`.
 
         :param string designation: The primary designation for this NearEarthObject.
         :param string name: The IAU name for this NearEarthObject. Not all NearEarthObject in dataset have a name
         :param float diameter: The diameter, in kilometers, of this NearEarthObject.
         :param bool hazardous: Whether or not this NearEarthObject is potentially hazardous.
-        :param list approaches: A collection of this NearEarthObjects close approaches to Earth.
         """
         # TODO_DONE: Assign information from the arguments passed to the constructor
         # onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
@@ -64,7 +62,7 @@ class NearEarthObject:
         self.hazardous = hazardous
 
         # Create an empty initial collection of linked approaches.
-        self.approaches = approaches
+        self.approaches = []
 
     @property
     def fullname(self):
@@ -128,7 +126,18 @@ class CloseApproach:
         self.velocity = velocity
 
         # Create an attribute for the referenced NEO, originally None.
-        self.neo = None
+        self._neo = None
+
+    @property
+    def neo(self):
+        return self._neo
+
+    @neo.setter
+    def neo(self, neo_obj: NearEarthObject):
+        # TODO: Document neo setter function
+        #  milestone: 2
+        self._neo = neo_obj
+        neo_obj.approaches.append(self)
 
     @property
     def time_str(self):
@@ -150,10 +159,13 @@ class CloseApproach:
     @property
     def fullname(self):
         """Return a representation of the full name of this CloseApproach."""
-        # TODO: Use self.designation and self.name to build a fullname for this object.
+        # TODO_DONE: Use self.designation and self.name to build a fullname for this object.
         #   Enable below once self.neo has been implemented
-        # return f'{self.designation} ({self.name})' if self.name else f'{self.designation}'
-        return f'{self._designation}'
+        fullname = f'{self._designation}'
+        if self._neo and self._neo.name:
+            fullname += f' ({self._neo.name})'
+
+        return fullname
 
     def __str__(self):
         """Return `str(self)`."""
@@ -162,7 +174,6 @@ class CloseApproach:
         # method for examples of advanced string formatting.
         return f"At {datetime_to_str(self.time)}, {repr(self._designation)} approaches Earth at a " \
                f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
-        # TODO: extra - use the following after self.neo is a actual neo object
         # return f"At {self.time}, {repr(self.neo.fullname)} approaches Earth at a " \
         #        f"distance of {self.distance} au and a velocity of {self.velocity} km/s."
 
