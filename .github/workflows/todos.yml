@@ -1,4 +1,4 @@
-name: "Workflow"
+name: Issues From Todos Generator
 on: ["push"]
 jobs:
   build:
