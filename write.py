@@ -26,7 +26,7 @@ def write_to_csv(results, filename):
     """
     # TODO_DONE: Write the results to a CSV file, following the specification in the instructions.
     # milestone: 4
-    rows_dict = [r.serialize_csv for r in results]
+    rows_dict = [r.serialize_to_csv for r in results]
     with open(filename, 'r') as f:
         writer = csv.DictWriter(f, fieldnames=rows_dict[0].keys(), quoting=csv.QUOTE_NONNUMERIC)
         writer.writeheader()
@@ -46,6 +46,6 @@ def write_to_json(results, filename):
     """
     # TODO: Write the results to a JSON file, following the specification in the instructions.
     # milestone: 4
-    results_dicts = [r.serialize_json for r in results]
+    results_dicts = [r.serialize_to_json for r in results]
     with open(filename, 'w') as f:
         json.dump(results_dicts, f)

@@ -42,3 +42,10 @@ def datetime_to_str(dt):
     :return: That datetime, as a human-readable string without seconds.
     """
     return datetime.datetime.strftime(dt, "%Y-%m-%d %H:%M")
+
+def float_or_nan(v:str):
+    """ Convert a str that is a possible float to
+        (1) Type Float of param value
+        (2) A nan float: float('nan')
+    """
+    return float(v) if v.replace('.', '').isnumeric() else float('nan')
