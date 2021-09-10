@@ -21,13 +21,7 @@ import datetime
 from math import isnan
 from operator import attrgetter
 
-from helpers import cd_to_datetime, datetime_to_str
-from enum import Enum
-
-
-class HAZARDOUS(Enum):
-    Y = True
-    N = False
+from helpers import cd_to_datetime, datetime_to_str, float_or_nan
 
 
 class NearEarthObject:
@@ -45,7 +39,8 @@ class NearEarthObject:
 
     # TODO_IGNORE: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation: str, name: str = '', hazardous: bool = False, diameter: float = float('nan')):
+    def __init__(self, designation: str = '', name: str = None, hazardous: bool = False,
+                 diameter: float = float('nan')):
         """Create a new `NearEarthObject`.
 
         :param string designation: The primary designation for this NearEarthObject.
@@ -59,7 +54,7 @@ class NearEarthObject:
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
         self.designation = designation
-        self.name = name if name else None
+        self.name = name
         self.diameter = diameter
         self.hazardous = hazardous
 
@@ -73,14 +68,28 @@ class NearEarthObject:
         return f'{self.designation} ({self.name})' if self.name else f'{self.designation}'
 
     @property
-    def serialize_json(self):
-        # TODO: Document Function
-        key_map = {'designation': 'designation',
-                   'name': 'name',
-                   'diameter_km': 'diameter',
-                   'potentially_hazardous': 'hazardous'
-                   }
-        return {k: attrgetter(v)(self) for k, v in key_map.items()}
+    def serialize_to_json(self):
+        """ Converts instance to a dict using the required json output field names. """
+        json_output_map = {'designation': 'designation',
+                           'name': 'name',
+                           'diameter_km': 'diameter',
+                           'potentially_hazardous': 'hazardous'
+                           }
+        return {k: attrgetter(v)(self) for k, v in json_output_map.items()}
+
+    @classmethod
+    def serialize_from_csv(cls, csv_row_dict: dict):
+        """ Mapping csv header to class attributes & types
+                -> csv_input_field:(class_attribute_name, target_type)
+        """
+        csv_input_map = {
+            'pdes': ('designation', str),
+            'name': ('name', lambda x: None if not x else x),
+            'pha': ('hazardous', lambda x: False if not x else {'Y': True, 'N': False}[x]),
+            'diameter': ('diameter', float_or_nan)
+        }
+        kwargs = {v[0]: v[1](csv_row_dict[k]) for k, v in csv_input_map.items()}
+        return cls(**kwargs)
 
     def __str__(self):
         """Return `str(self)`."""
@@ -88,7 +97,7 @@ class NearEarthObject:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
 
-        """ Orginal suggested output"""
+        """ Original suggested output"""
         # return f"NEO {self.fullname} has a diameter of {self.diameter:.3f} km " \
         #        f"and {['is not', 'is'][int(self.hazardous)]} potentially hazardous."
 
@@ -112,7 +121,7 @@ class CloseApproach:
     in kilometers per second.
 
     A `CloseApproach` also maintains a reference to its `NearEarthObject` -
-    initally, this information (the NEO's primary designation) is saved in a
+    initially, this information (the NEO's primary designation) is saved in a
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
@@ -124,8 +133,10 @@ class CloseApproach:
         """Create a new `CloseApproach`.
 
         :param datetime time: The date and time, in UTC, at which the NEO passes closest to Earth.
-        :param float distance: The nominal approach distance, in astronomical units, of the NEO to Earth at the closest point.
-        :param float velocity: The velocity, in kilometers per second, of the NEO relative to Earth at the closest point.
+        :param float distance: The nominal approach distance, in astronomical units, of the NEO to
+            Earth at the closest point.
+        :param float velocity: The velocity, in kilometers per second, of the NEO relative
+            to Earth at the closest point.
         :param NearEarthObject neo: The NearEarthObject that is making a close approach to Earth.
         """
         # TODO_DONE: Assign information from the arguments passed to the constructor
@@ -146,8 +157,6 @@ class CloseApproach:
 
     @neo.setter
     def neo(self, neo_obj: NearEarthObject):
-        # TODO: Document neo setter function
-        #  milestone: 2
         self._neo = neo_obj
         neo_obj.approaches.append(self)
 
@@ -180,27 +189,41 @@ class CloseApproach:
         return fullname
 
     @property
-    def serialize_csv(self):
-        # TODO: Document Function
-        col_map = {'datetime_utc': 'time_str',
-                   'distance_au': 'distance',
-                   'velocity_km_s': 'velocity',
-                   'designation': 'neo.designation',
-                   'name': 'neo.name',
-                   'diameter_km': 'neo.diameter',
-                   'potentially_hazardous': 'neo.hazardous'
-                   }
-        return {k: attrgetter(v)(self) for k, v in col_map.items()}
+    def serialize_to_csv(self):
+        """ Converts instance to a dict using the required csv output field names. """
+        csv_output_map = {'datetime_utc': 'time_str',
+                          'distance_au': 'distance',
+                          'velocity_km_s': 'velocity',
+                          'designation': 'neo.designation',
+                          'name': 'neo.name',
+                          'diameter_km': 'neo.diameter',
+                          'potentially_hazardous': 'neo.hazardous'
+                          }
+        return {k: attrgetter(v)(self) for k, v in csv_output_map.items()}
 
     @property
-    def serialize_json(self):
-        # TODO: Document Function
-        key_map = {'datetime_utc': 'time_str',
-                   'distance_au': 'distance',
-                   'velocity_km_s': 'velocity',
-                   'neo': 'neo.serialize_json',
-                   }
-        return {k: attrgetter(v)(self) for k, v in key_map.items()}
+    def serialize_to_json(self):
+        """ Converts instance to a dict using the required json output field names. """
+        json_output_map = {'datetime_utc': 'time_str',
+                           'distance_au': 'distance',
+                           'velocity_km_s': 'velocity',
+                           'neo': 'neo.serialize_to_json',
+                           }
+        return {k: attrgetter(v)(self) for k, v in json_output_map.items()}
+
+    @classmethod
+    def serialize_from_json(cls, json_dict: dict):
+        """ Mapping json keys to class attributes & types
+                -> csv_input_field:(class_attribute_name, target_type)
+        """
+        json_input_map = {
+            'des': ('_designation', str),
+            'cd': ('time', cd_to_datetime),
+            'dist': ('distance', float_or_nan),
+            'v_rel': ('velocity', float_or_nan)
+        }
+        kwargs = {v[0]: v[1](json_dict[k]) for k, v in json_input_map.items()}
+        return cls(**kwargs)
 
     def __str__(self):
         """Return `str(self)`."""
