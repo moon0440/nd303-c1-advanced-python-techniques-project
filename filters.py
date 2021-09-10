@@ -78,9 +78,22 @@ class UnsupportedCriterionError(NotImplementedError):
 
 
 class ApproachFilter:
-    # TODO: Class documentation for ApproachFilter
+    """ Builds filters for Approach class.
+
+        When instance is called, passing an `CloseApproach` instance, it returns True if
+        all filters(conditions) are met. Otherwise returns False.
+
+        It can be created by initializing with a list[tuple], where tuple consists of...
+
+            (input_arg_value, class_attribute_name, operator, valid_type)
+
+            input_arg_value: Value passed from command line
+            class_attribute_name: Attribute name on `CloseApproach` instance to compare
+            operator: `operator` module function(any function might work)
+            valid_type: Type check for `input_arg_value`. `input_arg_value` must be an instance
+                of `valid_type`
+    """
     def __init__(self, filters: list[tuple]):
-        """ tuple format (input_arg_value, class_attribute_name, operator, valid_type) """
         self.filters = [f for f in filters if isinstance(f[0], f[3])]
 
     def __call__(self, approach):
