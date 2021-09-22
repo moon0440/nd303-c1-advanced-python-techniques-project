@@ -20,12 +20,14 @@ from database import NEODatabase
 
 
 # Paths to the test data files.
+# noinspection PyRedundantParentheses
 TESTS_ROOT = (pathlib.Path(__file__).parent).resolve()
 TEST_NEO_FILE = TESTS_ROOT / 'test-neos-2020.csv'
 TEST_CAD_FILE = TESTS_ROOT / 'test-cad-2020.json'
 
 
 class TestDatabase(unittest.TestCase):
+    # noinspection PyUnresolvedReferences
     @classmethod
     def setUpClass(cls):
         cls.neos = load_neos(TEST_NEO_FILE)

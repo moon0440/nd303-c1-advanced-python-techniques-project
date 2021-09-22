@@ -70,7 +70,7 @@ pha - whether NASA has marked the NEO as a "Potentially Hazardous Asteroid," rou
 diameter - the NEO's diameter (from an equivalent sphere) in kilometers.
 ```
 
-So, the first NEO described in the CSV file has a primary designation of 433 and an IAU name "Eros". It is ('Y') an NEO, but it is not ('N') potentially hazardous. It has a diameter of 16.84km.
+So, the first NEO described in the CSV file has a primary designation of 433 and an IAU name "Eros". It is ('Y') an NEO, but it is not ('N') potentially hazardous. It has a diameter of 16.84 km.
 
 Every NEO has a primary designation, but there exist NEOs without names (in fact, having an IAU name is relatively rare!). Some IAU names are reused for several NEOs. For some NEOs, the data doesn't include information about a diameter, because NASA does not have enough observations to make a reasonably-accurate estimate.
 
@@ -170,7 +170,7 @@ As before, this data set contains more information than we need. For this projec
 
 ### Visual Exploration
 
-If you're someone who prefers to explore data sets by poking around a web site, NASA has [a tutorial video](https://www.youtube.com/watch?v=UA6voCyCW1g) on how to effectively navigate the CNEOS website, and an [interactive close approach data table](https://cneos.jpl.nasa.gov/ca/) that you can investigate.
+If you're someone who prefers to explore data sets by poking around a website, NASA has [a tutorial video](https://www.youtube.com/watch?v=UA6voCyCW1g) on how to effectively navigate the CNEOS website, and an [interactive close approach data table](https://cneos.jpl.nasa.gov/ca/) that you can investigate.
 
 Also, it's important to realize that NASA is discovering new NEOs, and potential forecasting new close approaches, every week, so their web-based UI might contain updated information that isn't represented in the data files included with this project.
 
