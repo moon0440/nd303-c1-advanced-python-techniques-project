@@ -65,7 +65,7 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
 
-        return self.des_neo_map[designation] if designation in self.des_neo_map else None
+        return self.des_neo_map.get(designation) if designation in self.des_neo_map else None
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -99,5 +99,5 @@ class NEODatabase:
         :return: A stream of matching `CloseApproach` objects.
         """
         for approach in self._approaches:
-            if not filters or all((f(approach) for f in filters)):
+            if not filters or all(f(approach) for f in filters):
                 yield approach
