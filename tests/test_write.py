@@ -24,12 +24,11 @@ import pathlib
 import unittest
 import unittest.mock
 
-
 from extract import load_neos, load_approaches
 from database import NEODatabase
 from write import write_to_csv, write_to_json
 
-
+# noinspection PyRedundantParentheses
 TESTS_ROOT = (pathlib.Path(__file__).parent).resolve()
 TEST_NEO_FILE = TESTS_ROOT / 'test-neos-2020.csv'
 TEST_CAD_FILE = TESTS_ROOT / 'test-cad-2020.json'
@@ -45,6 +44,7 @@ def build_results(n):
     return approaches[:n]
 
 
+# noinspection PyPep8Naming
 @contextlib.contextmanager
 def UncloseableStringIO(value=''):
     """A context manager for an uncloseable `io.StringIO`.
@@ -60,6 +60,7 @@ def UncloseableStringIO(value=''):
     buf._close = buf.close
     buf.close = lambda: False
     yield buf
+    # noinspection PyProtectedMember
     buf.close = buf._close
     delattr(buf, '_close')
     buf.close()
@@ -102,7 +103,6 @@ class TestWriteToCSV(unittest.TestCase):
         except csv.Error as err:
             raise self.failureException("Unable to sniff for headers.") from err
 
-
     def test_csv_data_has_five_rows(self):
         # Now, we have the value in memory, and can _actually_ start testing.
         buf = io.StringIO(self.value)
@@ -127,7 +127,8 @@ class TestWriteToCSV(unittest.TestCase):
         except csv.Error as err:
             raise self.failureException("write_to_csv produced an invalid CSV format.") from err
 
-        fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 'name', 'diameter_km', 'potentially_hazardous')
+        fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s',
+                      'designation', 'name', 'diameter_km', 'potentially_hazardous')
         self.assertGreater(len(rows), 0)
         self.assertSetEqual(set(fieldnames), set(rows[0].keys()))
 

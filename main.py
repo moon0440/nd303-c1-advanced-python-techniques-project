@@ -73,6 +73,7 @@ def date_fromisoformat(date_string):
         raise argparse.ArgumentTypeError(f"'{date_string}' is not a valid date. Use YYYY-MM-DD.")
 
 
+# noinspection PyShadowingNames
 def make_parser():
     """Create an ArgumentParser for this script.
 
@@ -92,6 +93,7 @@ def make_parser():
     subparsers = parser.add_subparsers(dest='cmd')
 
     # Add the `inspect` subcommand parser.
+    # noinspection PyShadowingNames
     inspect = subparsers.add_parser('inspect',
                                     description="Inspect an NEO by primary designation or by name.")
     inspect.add_argument('-v', '--verbose', action='store_true',
@@ -286,6 +288,7 @@ class NEOShell(cmd.Cmd):
             return None
 
         # Use the ArgumentParser to parse the shell arguments.
+        # noinspection PyUnusedLocal
         try:
             return parser.parse_args(args)
         except SystemExit as err:
@@ -352,6 +355,7 @@ class NEOShell(cmd.Cmd):
         # Run the `inspect` subcommand.
         query(self.db, args)
 
+    # noinspection PyMethodMayBeStatic,PyPep8Naming
     def do_EOF(self, _arg):
         """Exit the interactive session."""
         return True
