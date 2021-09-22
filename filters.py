@@ -126,8 +126,7 @@ def limit(iterator, n=None):
 
     :param iterator: An iterator of values.
     :param n: The maximum number of values to produce.
-    :yield: The first (at most) `n` values from the iterator.
+    :return: The first (at most) `n` values from the iterator using islice generator.
     """
     n = n if n else None
-    for i in islice(iterator, n):
-        yield i
+    return islice(iterator, n)
